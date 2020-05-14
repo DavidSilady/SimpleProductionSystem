@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 
 def read_fact_set():
@@ -17,17 +18,17 @@ def parse_rule_line(line):
 
 def read_rule_set():
     file = open("rule_set", "r")
-    facts = []
+    rules = []
     while True:
         rule_name = file.readline().replace(":", "")
         if_line = file.readline()
         then_line = file.readline()
         line = file.readline()
-        rule_conditions = parse_rule_line(if_line)
-        rule_results = parse_rule_line(then_line)
-        print(rule_conditions, rule_results)
+        rules.append(Rule(parse_rule_line(if_line),
+                          parse_rule_line(then_line)))
         if not line:
             break
+    return rules
 
 
 def clear_brackets(line):
@@ -36,5 +37,10 @@ def clear_brackets(line):
     line = line.replace("\n", "")
     return line
 
+
+class Rule:
+    def __init__(self, conditions: List[str], results: List[str]):
+        self.conditions = conditions
+        self.results = results
 
 
