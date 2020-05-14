@@ -13,7 +13,6 @@ def read_fact_set():
 
 def parse_rule_line(line):
     conditions_string = re.search('\((.*)\)', line).group(1)
-    print(conditions_string)
     return [p.split(')')[0] for p in conditions_string.split('(') if ')' in p]
 
 

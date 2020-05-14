@@ -1,5 +1,6 @@
 from typing import List
 from file_parser import Rule
+from itertools import permutations
 
 
 def extract_names(facts: set):
@@ -14,21 +15,19 @@ def extract_names(facts: set):
 
 def kombajn(rules: List[Rule], facts: set):
 	names = extract_names(facts)
-	for name1 in names:
-		for name2 in names:
-			for name3 in names:
-				variables = [name1, name2, name3]
-				check_rules(rules, facts, variables)
+	perm = permutations(names, len(variable_markings_from_file()))
+	for variables in perm:
+		check_rules(rules, facts, variables)
 
 
-def check_rules(rules: List[Rule], facts: set, variables: List[str]):
+def check_rules(rules: List[Rule], facts: set, variables):
 	for rule in rules:
 		if all_conditions_match(rule, facts, variables):
 			for result in rule.results:
 				execute_result(result, variables, facts)
 
 
-def all_conditions_match(rule: Rule, facts, variables: List[str]):
+def all_conditions_match(rule: Rule, facts, variables):
 	for condition in rule.conditions:
 		none_matched = True
 
@@ -53,7 +52,7 @@ def is_special_condition(condition: str):
 	return False
 
 
-def execute_result(result: str, variables: List[str], facts: set):
+def execute_result(result: str, variables, facts: set):
 	filled_result = add_variables(result, variables)
 	action, output_string = decode_result_action(filled_result)
 	if action == "pridaj":
@@ -63,7 +62,7 @@ def execute_result(result: str, variables: List[str], facts: set):
 		action_message(output_string)
 		return
 	if action == "vymaz":
-		action_delete(output_string)
+		action_delete(action + output_string)
 		return
 
 
@@ -90,7 +89,7 @@ def variable_markings_from_file():
 	return file.read().split()
 
 
-def add_variables(generic_string: str, variables: List[str]):
+def add_variables(generic_string: str, variables):
 	filled_string = "" + generic_string
 	variable_markings = variable_markings_from_file()
 	i = 0
