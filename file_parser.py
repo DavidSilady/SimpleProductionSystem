@@ -4,9 +4,9 @@ from typing import List
 
 def read_fact_set():
     file = open("fact_set", "r")
-    facts = []
+    facts = set()
     for line in file:
-        facts.append(clear_brackets(line))
+        facts.add(clear_brackets(line))
     file.close()
     return facts
 

@@ -2,7 +2,7 @@ from typing import List
 from file_parser import Rule
 
 
-def extract_names(facts: List[str]):
+def extract_names(facts: set):
 	names = set()
 	for fact in facts:
 		split_fact = fact.split()
@@ -12,7 +12,7 @@ def extract_names(facts: List[str]):
 	return names
 
 
-def kombajn(rules: List[Rule], facts: List[str]):
+def kombajn(rules: List[Rule], facts: set):
 	names = extract_names(facts)
 	for name1 in names:
 		for name2 in names:
@@ -21,11 +21,11 @@ def kombajn(rules: List[Rule], facts: List[str]):
 				check_rules(rules, facts, variables)
 
 
-def check_rules(rules: List[Rule], facts: List[str], variables: List[str]):
+def check_rules(rules: List[Rule], facts: set, variables: List[str]):
 	for rule in rules:
 		if all_conditions_match(rule, facts, variables):
 			for result in rule.results:
-				execute_result(result, variables)
+				execute_result(result, variables, facts)
 
 
 def all_conditions_match(rule: Rule, facts, variables: List[str]):
@@ -53,21 +53,26 @@ def is_special_condition(condition: str):
 	return False
 
 
-def execute_result(result: str, variables: List[str]):
+def execute_result(result: str, variables: List[str], facts: set):
 	filled_result = add_variables(result, variables)
 	action, output_string = decode_result_action(filled_result)
-	print(action, output_string)
 	if action == "pridaj":
+		action_add(output_string, facts)
 		return
 	if action == "sprava":
+		action_message(output_string)
 		return
 	if action == "vymaz":
+		action_delete(output_string)
 		return
 
 
-def action_add(string):
-	file = open("fact_set", "a")
-	file.write(string)
+def action_add(string, facts: set):
+	if string in facts:
+		return
+	facts.add(string)
+	file = open("output", "a")
+	file.write("(" + string + ")\n")
 	file.close()
 
 
@@ -76,12 +81,18 @@ def action_message(string):
 
 
 def action_delete(string):
+	print(string)
 	pass
+
+
+def variable_markings_from_file():
+	file = open("variable_markings", "r")
+	return file.read().split()
 
 
 def add_variables(generic_string: str, variables: List[str]):
 	filled_string = "" + generic_string
-	variable_markings = ["X", "Y", "Z"]
+	variable_markings = variable_markings_from_file()
 	i = 0
 	for variable in variables:
 		filled_string = filled_string.replace("?" + variable_markings[i], variable)
@@ -95,5 +106,4 @@ def decode_result_action(result: str):
 	output_string = ""
 	for split in split_result[1:]:
 		output_string += " " + split
-	output_string += "\n"
 	return action, output_string[1:]
