@@ -7,6 +7,7 @@ def read_fact_set():
     facts = []
     for line in file:
         facts.append(clear_brackets(line))
+    file.close()
     return facts
 
 
@@ -28,6 +29,7 @@ def read_rule_set():
                           parse_rule_line(then_line)))
         if not line:
             break
+    file.close()
     return rules
 
 
