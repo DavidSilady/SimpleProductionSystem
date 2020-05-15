@@ -17,14 +17,15 @@ def parse_rule_line(line):
 
 
 def read_rule_set():
-    file = open("rule_set", "r")
+    file = open("factorial_rule_set", "r")
     rules = []
     while True:
         rule_name = file.readline().replace(":", "")
         if_line = file.readline()
         then_line = file.readline()
         line = file.readline()
-        rules.append(Rule(parse_rule_line(if_line),
+        rules.append(Rule(rule_name,
+                          parse_rule_line(if_line),
                           parse_rule_line(then_line)))
         if not line:
             break
@@ -40,8 +41,10 @@ def clear_brackets(line):
 
 
 class Rule:
-    def __init__(self, conditions: List[str], results: List[str]):
+    def __init__(self, name, conditions: List[str], results: List[str]):
+        self.name = name
         self.conditions = conditions
         self.results = results
+        print("\n", name, "IF ", conditions, "\nTHEN ", results)
 
 
