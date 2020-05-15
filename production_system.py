@@ -16,15 +16,15 @@ def extract_variables(facts: set):
 			if word.isdigit():
 				num_variables += 1
 				variables.append(word)
-	print(variables)
+	# print(variables)
 	return variables, num_variables
 
 
 def kombajn(rules: List[Rule], facts: set):
 	variables, num_variables = extract_variables(facts)
-	print("Num variables: ", num_variables)
+	# print("Num variables: ", num_variables)
 	perms = set(permutations(variables, min(len(variable_markings_from_file()), num_variables)))
-	print(perms)
+	# print(perms)
 	for variables_perm in perms:
 		check_rules(rules, facts, variables_perm)
 
@@ -78,12 +78,12 @@ def execute_result(result: str, variables, facts: set):
 
 
 def do_math(string):
-	print("Math string: ", string)
+	# print("Math string: ", string)
 	expressions = get_math_expressions(string)
-	print(expressions)
+	# print(expressions)
 	output = ""
 	for expression in expressions:
-		print("eval( ", expression, " )")
+		# print("eval( ", expression, " )")
 		result = str(eval(expression))
 		result = result.replace("{", "")
 		result = result.replace("}", "")
@@ -96,7 +96,7 @@ def get_math_expressions(string):
 
 
 def action_add(string, facts: set):
-	print("ADD ", string)
+	# print("ADD ", string)
 	if string in facts:
 		return
 	facts.add(string)
@@ -110,10 +110,13 @@ def action_message(string):
 
 
 def action_delete(string, facts: set):
-	print("REMOVE ", string)
-	print(facts)
+	# print("REMOVE ", string)
+	# print(facts)
+	if string not in facts:
+		print("No such fact exists.")
+		return
 	facts.remove(string)
-	print(facts)
+	# print(facts)
 	file = open("fact_set", "w")
 	for fact in facts:
 		file.write("(" + fact + ")\n")
