@@ -23,9 +23,7 @@ def extract_variables(facts: set):
 # combine()
 def kombajn(rules: List[Rule], facts: set, fact_file, is_skipping):
 	variables, num_variables = extract_variables(facts)
-	# print("Num variables: ", num_variables)
 	perms = set(permutations(variables, min(len(variable_markings_from_file()), num_variables)))
-	# print(perms)
 	for variables_perm in perms:
 		if check_rules(rules, facts, variables_perm, fact_file) and not is_skipping:
 			return
@@ -83,12 +81,9 @@ def execute_result(result: str, variables, facts: set, fact_file):
 
 
 def do_math(string):
-	# print("Math string: ", string)
 	expressions = get_math_expressions(string)
-	# print(expressions)
 	output = ""
 	for expression in expressions:
-		# print("eval( ", expression, " )")
 		try:
 			result = str(eval(expression))
 			result = result.replace("{", "")

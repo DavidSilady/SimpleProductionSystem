@@ -1,6 +1,19 @@
 from file_parser import read_fact_set, read_rule_set
 from production_system import kombajn, action_add, action_delete
 
+"""
+Commands:
+
+"next"                      - lets the system execute 1 step
+"skip N"                    - lets the system execute N steps
+"exit"                      - exits the program
+"facts"                     - prints all the currently known facts
+"add FACT"                  - adds a fact to the file
+"delete FACT/INDEX"         - deletes a fact based on its string or its index
+"file fact/rule FILENAME"   - change the file for rules or facts
+
+"""
+
 
 def init():
     fact_file = "factorial"
@@ -46,12 +59,13 @@ def handle_input(skip_num, facts: set, fact_file):
 
     command = input('Next command '
                     '[ ENTER '
-                    '| "next" '
-                    '| "skip (N)" '
+                    '| "next" '  
+                    '| "skip N" '
                     '| "exit" '
                     '| "facts" '
-                    '| "add (FACT)" '
-                    '| "delete (FACT/INDEX)" '
+                    '| "add FACT" '
+                    '| "delete FACT/INDEX" '
+                    '| "file fact/rule FILENAME"'
                     ']\n')
 
     if command == "":
