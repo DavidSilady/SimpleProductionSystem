@@ -138,7 +138,9 @@ def action_delete(string, facts: set, fact_file):
 
 def variable_markings_from_file():
 	file = open("variable_markings", "r")
-	return file.read().split()
+	output = file.read().split()
+	file.close()
+	return output
 
 
 def add_variables(generic_string: str, variables):
