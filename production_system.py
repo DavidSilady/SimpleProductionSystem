@@ -20,13 +20,14 @@ def extract_variables(facts: set):
 	return variables, num_variables
 
 
-def kombajn(rules: List[Rule], facts: set, fact_file):
+# combine()
+def kombajn(rules: List[Rule], facts: set, fact_file, is_skipping):
 	variables, num_variables = extract_variables(facts)
 	# print("Num variables: ", num_variables)
 	perms = set(permutations(variables, min(len(variable_markings_from_file()), num_variables)))
 	# print(perms)
 	for variables_perm in perms:
-		if check_rules(rules, facts, variables_perm, fact_file):
+		if check_rules(rules, facts, variables_perm, fact_file) and not is_skipping:
 			return
 
 

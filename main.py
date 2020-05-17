@@ -7,10 +7,10 @@ def init():
     rule_file = "factorial_rule"
     facts = read_fact_set(fact_file)
     rules = read_rule_set(rule_file)
-    stepping_enabled = True
+    is_skipping = False
     skip_num = 0
     while True:
-        input_result = handle_input(stepping_enabled, skip_num, facts, fact_file)
+        input_result = handle_input(skip_num, facts, fact_file)
         if input_result == "exit":
             break
 
@@ -28,34 +28,39 @@ def init():
 
         if input_result is not None and input_result.isdigit():
             skip_num = int(input_result)
+            if skip_num <= 0:
+                is_skipping = False
+                continue
+            is_skipping = True
 
-        kombajn(rules, facts, fact_file)
+        kombajn(rules, facts, fact_file, is_skipping)
 
 
-def handle_input(stepping_enabled, skip_num, facts: set, fact_file):
+def handle_input(skip_num, facts: set, fact_file):
     command = ""
     # print(skip_num)
     if skip_num > 0:
         # print("Skipping")
         skip_num -= 1
         return str(skip_num)
-    if stepping_enabled:
-        command = input('Next command '
-                        '[ ENTER '
-                        '| "next" '
-                        '| "skip (N)" '
-                        '| "exit" '
-                        '| "facts" '
-                        '| "add (FACT)" '
-                        '| "delete (FACT/INDEX)" '
-                        ']\n')
+
+    command = input('Next command '
+                    '[ ENTER '
+                    '| "next" '
+                    '| "skip (N)" '
+                    '| "exit" '
+                    '| "facts" '
+                    '| "add (FACT)" '
+                    '| "delete (FACT/INDEX)" '
+                    ']\n')
+
     if command == "":
         return "continue"
     if command == "next":
         return ""
     if command.split()[0] == "skip":
         if len(command.split()) >= 2:
-            return str(int(command.split()[1]) - 1)
+            return str(int(command.split()[1]))
     if command.split()[0] == "add":
         action_add(command[4:], facts, fact_file)
         return "continue"

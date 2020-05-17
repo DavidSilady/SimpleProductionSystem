@@ -12,4 +12,4 @@ POTOM [(DEL medzivypocet ?X 0 ?Y)(ADD faktorial ?X je ?Y)(MSG Faktorial ?X je ?Y
 
 F4
 AK [(medzivypocet ?X ?Y ?Z)(<> 0 ?Y)]
-POTOM [(DEL medzivypocet ?X ?Y ?Z)(ADD EVAL medzivypocet ?X { ?Y - 1 } { ?Y * ?Z })]
+POTOM [(DEL medzivypocet ?X ?Y ?Z)(ADD EVAL medzivypocet ?X { ?Y - 1 } { ?Y * ?Z })
