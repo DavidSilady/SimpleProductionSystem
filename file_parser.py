@@ -2,8 +2,8 @@ import re
 from typing import List
 
 
-def read_fact_set():
-    file = open("fact_set", "r")
+def read_fact_set(filename):
+    file = open(filename, "r")
     facts = set()
     for line in file:
         facts.add(clear_brackets(line))
@@ -16,8 +16,8 @@ def parse_rule_line(line):
     return [p.split(')')[0] for p in conditions_string.split('(') if ')' in p]
 
 
-def read_rule_set():
-    file = open("factorial_rule_set", "r")
+def read_rule_set(filename):
+    file = open(filename, "r")
     rules = []
     while True:
         rule_name = file.readline().replace(":", "")

@@ -20,20 +20,25 @@ def extract_variables(facts: set):
 	return variables, num_variables
 
 
-def kombajn(rules: List[Rule], facts: set):
+def kombajn(rules: List[Rule], facts: set, fact_file):
 	variables, num_variables = extract_variables(facts)
 	# print("Num variables: ", num_variables)
 	perms = set(permutations(variables, min(len(variable_markings_from_file()), num_variables)))
 	# print(perms)
 	for variables_perm in perms:
-		check_rules(rules, facts, variables_perm)
+		if check_rules(rules, facts, variables_perm, fact_file):
+			return
 
 
-def check_rules(rules: List[Rule], facts: set, variables):
+def check_rules(rules: List[Rule], facts: set, variables, fact_file):
 	for rule in rules:
 		if all_conditions_match(rule, facts, variables):
+			# print(rule.conditions, "\n", rule.results)
+			is_new_result = False
 			for result in rule.results:
-				execute_result(result, variables, facts)
+				is_new_result = execute_result(result, variables, facts, fact_file) or is_new_result
+			return is_new_result
+	return False
 
 
 def all_conditions_match(rule: Rule, facts, variables):
@@ -61,20 +66,19 @@ def is_special_condition(condition: str):
 	return False
 
 
-def execute_result(result: str, variables, facts: set):
+# returns Boolean whether the result was successful & new
+def execute_result(result: str, variables, facts: set, fact_file):
 	filled_result = add_variables(result, variables)
 	action, output_string = decode_result_action(filled_result)
-	if action == "pridaj":
-		if output_string.split()[0] == "medzivypocet":
-			output_string = do_math(output_string[12:])
-		action_add(output_string, facts)
-		return
-	if action == "sprava":
-		action_message(output_string)
-		return
-	if action == "vymaz":
-		action_delete(output_string, facts)
-		return
+	# print("System: Executing action", action, "\n", output_string)
+	if action == "ADD":
+		if output_string.split()[0] == "EVAL":
+			output_string = do_math(output_string[4:])
+		return action_add(output_string, facts, fact_file)
+	if action == "MSG":
+		return action_message(output_string)
+	if action == "DEL":
+		return action_delete(output_string, facts, fact_file)
 
 
 def do_math(string):
@@ -84,43 +88,52 @@ def do_math(string):
 	output = ""
 	for expression in expressions:
 		# print("eval( ", expression, " )")
-		result = str(eval(expression))
-		result = result.replace("{", "")
-		result = result.replace("}", "")
-		output += " " + result
-	return "medzivypocet" + output
+		try:
+			result = str(eval(expression))
+			result = result.replace("{", "")
+			result = result.replace("}", "")
+			output += " " + result
+		except NameError:
+			output += " " + expression
+	return output[1:]
 
 
 def get_math_expressions(string):
 	return list(filter(None, re.split(r"\s+(?=[^{}]*(?:{|$))", string)))
 
 
-def action_add(string, facts: set):
+# returns Boolean whether the action was successful & new
+def action_add(string, facts: set, fact_file):
 	# print("ADD ", string)
 	if string in facts:
-		return
+		return False
 	facts.add(string)
-	file = open("fact_set", "a")
+	file = open(fact_file, "a")
 	file.write("(" + string + ")\n")
 	file.close()
+	return True
 
 
+# returns Boolean whether the action was successful & new
 def action_message(string):
 	print(string)
+	return True
 
 
-def action_delete(string, facts: set):
+# returns Boolean whether the action was successful & new
+def action_delete(string, facts: set, fact_file):
 	# print("REMOVE ", string)
 	# print(facts)
 	if string not in facts:
 		print("No such fact exists.")
-		return
+		return False
 	facts.remove(string)
 	# print(facts)
-	file = open("fact_set", "w")
+	file = open(fact_file, "w")
 	for fact in facts:
 		file.write("(" + fact + ")\n")
 	file.close()
+	return True
 
 
 def variable_markings_from_file():
