@@ -12,23 +12,31 @@ def read_fact_set(filename):
 
 
 def parse_rule_line(line):
-    conditions_string = re.search('\((.*)\)', line).group(1)
+    conditions_string = re.search('\[(.*)\]', line).group(1)
     return [p.split(')')[0] for p in conditions_string.split('(') if ')' in p]
 
 
 def read_rule_set(filename):
-    file = open(filename, "r")
+    try:
+        file = open(filename, "r")
+    except FileNotFoundError:
+        print("File Not Found.")
     rules = []
-    while True:
-        rule_name = file.readline().replace(":", "")
-        if_line = file.readline()
-        then_line = file.readline()
-        line = file.readline()
-        rules.append(Rule(rule_name,
-                          parse_rule_line(if_line),
-                          parse_rule_line(then_line)))
-        if not line:
-            break
+
+    try:
+        while True:
+            rule_name = file.readline().replace(":", "")
+            if_line = file.readline()
+            then_line = file.readline()
+            line = file.readline()
+            rules.append(Rule(rule_name,
+                              parse_rule_line(if_line),
+                              parse_rule_line(then_line)))
+            if not line:
+                break
+    except AttributeError:
+        print("Wrong File Format")
+
     file.close()
     return rules
 

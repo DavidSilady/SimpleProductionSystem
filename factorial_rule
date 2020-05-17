@@ -1,15 +1,15 @@
 F1
-AK ((faktorial 0))
-POTOM ((DEL faktorial 0)(ADD faktorial 0 je 1)(MSG Faktorial 0 je 1))
+AK [(faktorial 0)]
+POTOM [(DEL faktorial 0)(ADD faktorial 0 je 1)(MSG Faktorial 0 je 1)]
 
 F2
-AK ((faktorial ?X)(<> ?X 0))
-POTOM ((DEL faktorial ?X)(ADD EVAL medzivypocet ?X { ?X - 1 } ?X))
+AK [(faktorial ?X)(<> ?X 0)]
+POTOM [(DEL faktorial ?X)(ADD EVAL medzivypocet ?X { ?X - 1 } ?X)]
 
 F3
-AK ((medzivypocet ?X 0 ?Y)(<> 0 ?Y))
-POTOM ((DEL medzivypocet ?X 0 ?Y)(ADD faktorial ?X je ?Y)(MSG Faktorial ?X je ?Y))
+AK [(medzivypocet ?X 0 ?Y)(<> 0 ?Y)]
+POTOM [(DEL medzivypocet ?X 0 ?Y)(ADD faktorial ?X je ?Y)(MSG Faktorial ?X je ?Y)]
 
 F4
-AK ((medzivypocet ?X ?Y ?Z)(<> 0 ?Y))
-POTOM ((DEL medzivypocet ?X ?Y ?Z)(ADD EVAL medzivypocet ?X { ?Y - 1 } { ?Y * ?Z }))
+AK [(medzivypocet ?X ?Y ?Z)(<> 0 ?Y)]
+POTOM [(DEL medzivypocet ?X ?Y ?Z)(ADD EVAL medzivypocet ?X { ?Y - 1 } { ?Y * ?Z })]
